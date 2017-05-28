@@ -1,0 +1,1896 @@
+package com.components;
+
+import com.sun.glass.events.KeyEvent;
+import java.awt.HeadlessException;
+import static java.lang.Thread.sleep;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import net.proteanit.sql.DbUtils;
+
+public final class Transaction extends javax.swing.JFrame {
+
+    Connection connection = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    public int t;
+    String totalte;
+
+    public Transaction() {
+        connection = DBConnection.ConnectDb();
+        initComponents();
+        CurrentDate();
+        Fill_combo1();
+        inittransaction_id();
+        check_available();
+
+    }
+
+    public void emptysold() {
+
+        String sql = "delete from sold";
+        try {
+            pst = connection.prepareStatement(sql);
+            pst.execute();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+
+    public void diplayupdatedloan() {
+
+        String SQL = "select loan from customer_patient where c_p_name= ? ";
+        try {
+            pst = connection.prepareStatement(SQL);
+            pst.setString(1, P_Name.getText());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String add3 = rs.getString("loan");
+                Credit.setText(add3);
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+
+    }
+
+    public void inittransaction_id() {
+        String SQL = "SELECT transaction_id FROM transaction ORDER BY transaction_id DESC LIMIT 1";
+        try {
+            pst = connection.prepareStatement(SQL);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String add1 = rs.getString("transaction_id");
+                int sum = Integer.parseInt(add1);
+                if (sum != 0) {
+
+                    TransactionID.setText(Integer.toString(++sum));
+                }
+            } else {
+                TransactionID.setText("1");
+            }
+        } catch (SQLException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+
+    public void CurrentDate() {
+
+        Thread clock = new Thread() {
+            @Override
+            public void run() {
+                for (;;) {
+                    Calendar cal = new GregorianCalendar();
+                    int month = cal.get(Calendar.MONTH);
+                    int year = cal.get(Calendar.YEAR);
+                    int day = cal.get(Calendar.DAY_OF_MONTH);
+                    datevar.setText("Date:" + year + "/" + (month + 1) + "/" + day);
+
+                    int second = cal.get(Calendar.SECOND);
+                    int minute = cal.get(Calendar.MINUTE);
+                    int hour = cal.get(Calendar.HOUR);
+                    int am_pm = cal.get(Calendar.AM_PM);
+                    String day_night = " ";
+                    if (am_pm == 1) {
+                        day_night = "PM";
+                    } else {
+                        day_night = "AM";
+                    }
+                    String time = hour + ":" + minute + ":" + second + day_night;
+                    timevar.setText("Time:" + time);
+
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Transaction.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        clock.start();
+
+    }
+
+    public void clearfiled() {
+
+        sntxt.setText("0");
+        GrandTotalFetch.setText(" ");
+        Drug_Name.setText(" ");
+        Edate.setText(" ");
+        price.setText(" ");
+        quantity_enter.setText(" ");
+        Sum.setText("0");
+        Search_Patient.setText(" ");
+        Credit.setText(" ");
+        P_Name.setText(" ");
+        Phone_No_Patient.setText(" ");
+        search_drug.setText("");
+        TenderFetch.setText("");
+        ChangeFetch.setText("");
+
+    }
+
+    private void Fill_combo1() {
+        try {
+            String sql = "select drug_batch from inventory";
+            pst = connection.prepareStatement(sql);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("drug_batch");
+                Drug_ID_Box.addItem(id);
+            }
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jSeparator1 = new javax.swing.JSeparator();
+        jFrame1 = new javax.swing.JFrame();
+        jLabel13 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        Drug = new javax.swing.JPanel();
+        DrugId = new javax.swing.JLabel();
+        DrugName = new javax.swing.JLabel();
+        ExpirationDate = new javax.swing.JLabel();
+        QNTY_LABEL = new javax.swing.JLabel();
+        Drug_Name = new javax.swing.JTextField();
+        Edate = new javax.swing.JTextField();
+        price = new javax.swing.JTextField();
+        Execute_Drug = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        Drug_ID_Box = new javax.swing.JComboBox();
+        MFG1 = new javax.swing.JLabel();
+        quantity_enter = new javax.swing.JTextField();
+        jSeparator3 = new javax.swing.JSeparator();
+        search_drug = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        Sum = new javax.swing.JTextField();
+        QNTY_LABEL1 = new javax.swing.JLabel();
+        sntxt = new javax.swing.JTextField();
+        QNTY_LABEL2 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator10 = new javax.swing.JSeparator();
+        Patient = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        Credit = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        GoToPatient = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        P_Name = new javax.swing.JTextField();
+        Phone = new javax.swing.JLabel();
+        Phone_No_Patient = new javax.swing.JTextField();
+        Search_Patient = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jSeparator4 = new javax.swing.JSeparator();
+        Eecute_Patient = new javax.swing.JButton();
+        Execute_Print1 = new javax.swing.JButton();
+        jSeparator11 = new javax.swing.JSeparator();
+        jSeparator12 = new javax.swing.JSeparator();
+        Search_Patient1 = new javax.swing.JTextField();
+        Cash = new javax.swing.JPanel();
+        TenderFetch = new javax.swing.JTextField();
+        Change = new javax.swing.JLabel();
+        Tender = new javax.swing.JLabel();
+        ChangeFetch = new javax.swing.JTextField();
+        Execute_Print = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        Trasaction_Table = new javax.swing.JTable();
+        GrandTotalFetch = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jSeparator9 = new javax.swing.JSeparator();
+        jSeparator13 = new javax.swing.JSeparator();
+        jSeparator14 = new javax.swing.JSeparator();
+        TransactionID = new javax.swing.JTextField();
+        Transaction = new javax.swing.JLabel();
+        jSeparator6 = new javax.swing.JSeparator();
+        jSeparator7 = new javax.swing.JSeparator();
+        jLabel5 = new javax.swing.JLabel();
+        jSeparator8 = new javax.swing.JSeparator();
+        jLabel7 = new javax.swing.JLabel();
+        transacted_by = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        datevar = new javax.swing.JMenu();
+        timevar = new javax.swing.JMenu();
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        jLabel13.setText("jLabel13");
+
+        jTextField1.setText("jTextField1");
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(102, 255, 255));
+        setForeground(new java.awt.Color(153, 255, 255));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jPanel2.setForeground(new java.awt.Color(102, 102, 102));
+
+        DrugId.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        DrugId.setText("Drug Batch/ID");
+
+        DrugName.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        DrugName.setText("Drug Name");
+
+        ExpirationDate.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        ExpirationDate.setText("Expiration Date");
+
+        QNTY_LABEL.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        QNTY_LABEL.setForeground(new java.awt.Color(102, 102, 102));
+        QNTY_LABEL.setText("Enter");
+
+        Drug_Name.setBackground(new java.awt.Color(255, 250, 233));
+        Drug_Name.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
+        Drug_Name.setForeground(new java.awt.Color(0, 0, 255));
+        Drug_Name.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Drug_NameActionPerformed(evt);
+            }
+        });
+
+        Edate.setBackground(new java.awt.Color(255, 250, 233));
+        Edate.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+
+        price.setBackground(new java.awt.Color(255, 250, 233));
+        price.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        price.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                priceActionPerformed(evt);
+            }
+        });
+
+        Execute_Drug.setBackground(new java.awt.Color(204, 204, 255));
+        Execute_Drug.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        Execute_Drug.setForeground(new java.awt.Color(51, 102, 255));
+        Execute_Drug.setText("ENTER");
+        Execute_Drug.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        Execute_Drug.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                Execute_DrugAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
+        Execute_Drug.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Execute_DrugActionPerformed(evt);
+            }
+        });
+        Execute_Drug.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                Execute_DrugKeyPressed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel2.setText("Drug");
+
+        Drug_ID_Box.setBackground(new java.awt.Color(204, 204, 255));
+        Drug_ID_Box.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        Drug_ID_Box.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent evt) {
+            }
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {
+                Drug_ID_BoxPopupMenuWillBecomeInvisible(evt);
+            }
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent evt) {
+            }
+        });
+        Drug_ID_Box.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Drug_ID_BoxActionPerformed(evt);
+            }
+        });
+
+        MFG1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        MFG1.setText("Price");
+
+        quantity_enter.setBackground(new java.awt.Color(255, 250, 233));
+        quantity_enter.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        quantity_enter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quantity_enterActionPerformed(evt);
+            }
+        });
+        quantity_enter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                quantity_enterKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                quantity_enterKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                quantity_enterKeyTyped(evt);
+            }
+        });
+
+        jSeparator3.setForeground(new java.awt.Color(0, 0, 255));
+
+        search_drug.setBackground(new java.awt.Color(255, 250, 233));
+        search_drug.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        search_drug.setForeground(new java.awt.Color(0, 0, 204));
+        search_drug.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                search_drugActionPerformed(evt);
+            }
+        });
+        search_drug.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                search_drugKeyReleased(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/components/search.png"))); // NOI18N
+        jLabel1.setText("Query By Drug Batch");
+
+        Sum.setEditable(false);
+        Sum.setBackground(new java.awt.Color(255, 250, 233));
+        Sum.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        Sum.setForeground(new java.awt.Color(51, 51, 51));
+
+        QNTY_LABEL1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        QNTY_LABEL1.setForeground(new java.awt.Color(102, 102, 102));
+        QNTY_LABEL1.setText("Sum");
+
+        sntxt.setEditable(false);
+        sntxt.setBackground(new java.awt.Color(255, 204, 204));
+        sntxt.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        sntxt.setForeground(new java.awt.Color(255, 0, 0));
+        sntxt.setText("0");
+        sntxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sntxtActionPerformed(evt);
+            }
+        });
+
+        QNTY_LABEL2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        QNTY_LABEL2.setForeground(new java.awt.Color(102, 102, 102));
+        QNTY_LABEL2.setText("Quantity");
+
+        jSeparator2.setForeground(new java.awt.Color(0, 0, 255));
+        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        jSeparator10.setForeground(new java.awt.Color(0, 153, 255));
+
+        javax.swing.GroupLayout DrugLayout = new javax.swing.GroupLayout(Drug);
+        Drug.setLayout(DrugLayout);
+        DrugLayout.setHorizontalGroup(
+            DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator3)
+            .addGroup(DrugLayout.createSequentialGroup()
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DrugLayout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(quantity_enter, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Sum, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DrugLayout.createSequentialGroup()
+                        .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(QNTY_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(QNTY_LABEL2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17)
+                        .addComponent(QNTY_LABEL1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(9, 9, 9)
+                .addComponent(Execute_Drug, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
+            .addGroup(DrugLayout.createSequentialGroup()
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DrugLayout.createSequentialGroup()
+                        .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(DrugLayout.createSequentialGroup()
+                                    .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(DrugName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(DrugId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(DrugLayout.createSequentialGroup()
+                                    .addComponent(ExpirationDate, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(6, 6, 6)))
+                            .addGroup(DrugLayout.createSequentialGroup()
+                                .addComponent(MFG1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)))
+                        .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(price)
+                            .addComponent(Edate)
+                            .addComponent(Drug_ID_Box, 0, 360, Short.MAX_VALUE)
+                            .addComponent(Drug_Name)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DrugLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(sntxt, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DrugLayout.createSequentialGroup()
+                        .addComponent(search_drug)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)))
+                .addContainerGap())
+            .addGroup(DrugLayout.createSequentialGroup()
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSeparator10, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        DrugLayout.setVerticalGroup(
+            DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DrugLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator10, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sntxt, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(search_drug, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DrugId, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Drug_ID_Box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DrugName, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Drug_Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ExpirationDate, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Edate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(MFG1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(DrugLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(QNTY_LABEL1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                            .addGroup(DrugLayout.createSequentialGroup()
+                                .addComponent(QNTY_LABEL)
+                                .addGap(1, 1, 1)
+                                .addComponent(QNTY_LABEL2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(DrugLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Sum)
+                            .addComponent(quantity_enter, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)))
+                    .addGroup(DrugLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Execute_Drug, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0))
+        );
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel11.setText("Patient Loan Amount");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel8.setText("Patient");
+
+        Credit.setEditable(false);
+        Credit.setBackground(new java.awt.Color(255, 250, 233));
+        Credit.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        Credit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreditActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/components/search.png"))); // NOI18N
+        jLabel9.setText(" Query By ID");
+
+        GoToPatient.setBackground(new java.awt.Color(204, 204, 255));
+        GoToPatient.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        GoToPatient.setForeground(new java.awt.Color(51, 102, 255));
+        GoToPatient.setText("Patient");
+        GoToPatient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GoToPatientActionPerformed(evt);
+            }
+        });
+        GoToPatient.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                GoToPatientKeyPressed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        jLabel14.setText("Patient Name");
+
+        P_Name.setBackground(new java.awt.Color(255, 250, 233));
+        P_Name.setFont(new java.awt.Font("Tahoma", 3, 18)); // NOI18N
+        P_Name.setForeground(new java.awt.Color(0, 0, 255));
+        P_Name.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                P_NameActionPerformed(evt);
+            }
+        });
+
+        Phone.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        Phone.setText("Patient Phone no.");
+
+        Phone_No_Patient.setBackground(new java.awt.Color(255, 250, 233));
+        Phone_No_Patient.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        Phone_No_Patient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Phone_No_PatientActionPerformed(evt);
+            }
+        });
+
+        Search_Patient.setBackground(new java.awt.Color(255, 250, 233));
+        Search_Patient.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        Search_Patient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Search_PatientActionPerformed(evt);
+            }
+        });
+        Search_Patient.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Search_PatientKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                Search_PatientKeyTyped(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/components/search.png"))); // NOI18N
+        jLabel4.setText("Query By Name");
+
+        jSeparator4.setForeground(new java.awt.Color(51, 51, 255));
+
+        Eecute_Patient.setBackground(new java.awt.Color(204, 204, 255));
+        Eecute_Patient.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        Eecute_Patient.setForeground(new java.awt.Color(255, 0, 0));
+        Eecute_Patient.setText("Loan");
+        Eecute_Patient.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        Eecute_Patient.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Eecute_PatientActionPerformed(evt);
+            }
+        });
+        Eecute_Patient.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                Eecute_PatientKeyPressed(evt);
+            }
+        });
+
+        Execute_Print1.setBackground(new java.awt.Color(204, 204, 255));
+        Execute_Print1.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        Execute_Print1.setForeground(new java.awt.Color(0, 0, 204));
+        Execute_Print1.setText("Clear Loan");
+        Execute_Print1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Execute_Print1ActionPerformed(evt);
+            }
+        });
+        Execute_Print1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                Execute_Print1KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Execute_Print1KeyReleased(evt);
+            }
+        });
+
+        jSeparator11.setForeground(new java.awt.Color(0, 153, 255));
+
+        jSeparator12.setForeground(new java.awt.Color(255, 0, 0));
+
+        Search_Patient1.setBackground(new java.awt.Color(255, 250, 233));
+        Search_Patient1.setFont(new java.awt.Font("Tahoma", 1, 19)); // NOI18N
+        Search_Patient1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Search_Patient1KeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                Search_Patient1KeyTyped(evt);
+            }
+        });
+
+        javax.swing.GroupLayout PatientLayout = new javax.swing.GroupLayout(Patient);
+        Patient.setLayout(PatientLayout);
+        PatientLayout.setHorizontalGroup(
+            PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator4)
+            .addGroup(PatientLayout.createSequentialGroup()
+                .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Phone_No_Patient))
+            .addComponent(jSeparator11)
+            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+            .addGroup(PatientLayout.createSequentialGroup()
+                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(P_Name))
+            .addGroup(PatientLayout.createSequentialGroup()
+                .addGroup(PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Credit, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator12, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Execute_Print1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Eecute_Patient, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(PatientLayout.createSequentialGroup()
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(PatientLayout.createSequentialGroup()
+                        .addGroup(PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Search_Patient, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                            .addComponent(Search_Patient1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addComponent(GoToPatient, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        PatientLayout.setVerticalGroup(
+            PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PatientLayout.createSequentialGroup()
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jSeparator11, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(GoToPatient, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(Search_Patient1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(PatientLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(Search_Patient, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(P_Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(PatientLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Phone_No_Patient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Credit, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Eecute_Patient, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Execute_Print1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(61, 61, 61))
+        );
+
+        TenderFetch.setBackground(new java.awt.Color(255, 250, 233));
+        TenderFetch.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        TenderFetch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TenderFetchActionPerformed(evt);
+            }
+        });
+        TenderFetch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TenderFetchKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TenderFetchKeyReleased(evt);
+            }
+        });
+
+        Change.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        Change.setForeground(new java.awt.Color(0, 0, 255));
+        Change.setText(" Change");
+
+        Tender.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        Tender.setForeground(new java.awt.Color(0, 0, 255));
+        Tender.setText("  Tender");
+
+        ChangeFetch.setEditable(false);
+        ChangeFetch.setBackground(new java.awt.Color(255, 250, 233));
+        ChangeFetch.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        ChangeFetch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangeFetchActionPerformed(evt);
+            }
+        });
+        ChangeFetch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                ChangeFetchKeyReleased(evt);
+            }
+        });
+
+        Execute_Print.setBackground(new java.awt.Color(204, 204, 255));
+        Execute_Print.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        Execute_Print.setForeground(new java.awt.Color(255, 0, 0));
+        Execute_Print.setText("Pay");
+        Execute_Print.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Execute_PrintActionPerformed(evt);
+            }
+        });
+        Execute_Print.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                Execute_PrintKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Execute_PrintKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout CashLayout = new javax.swing.GroupLayout(Cash);
+        Cash.setLayout(CashLayout);
+        CashLayout.setHorizontalGroup(
+            CashLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CashLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(CashLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Execute_Print, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(CashLayout.createSequentialGroup()
+                        .addGroup(CashLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TenderFetch)
+                            .addComponent(Tender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(CashLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(ChangeFetch)
+                            .addComponent(Change, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        CashLayout.setVerticalGroup(
+            CashLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CashLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(CashLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Tender, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Change, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(CashLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(TenderFetch, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                    .addComponent(ChangeFetch))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Execute_Print, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        Trasaction_Table.setBackground(new java.awt.Color(255, 204, 204));
+        jScrollPane1.setViewportView(Trasaction_Table);
+
+        GrandTotalFetch.setEditable(false);
+        GrandTotalFetch.setBackground(new java.awt.Color(255, 250, 233));
+        GrandTotalFetch.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        GrandTotalFetch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GrandTotalFetchActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel3.setText("  Purchased Items");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel6.setText(" GRAND TOTAL");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(GrandTotalFetch)
+            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(GrandTotalFetch, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jSeparator9.setForeground(new java.awt.Color(255, 0, 0));
+
+        jSeparator13.setForeground(new java.awt.Color(255, 0, 0));
+        jSeparator13.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        jSeparator14.setForeground(new java.awt.Color(255, 0, 0));
+        jSeparator14.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jSeparator9)
+                    .addComponent(Drug, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Cash, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator14, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(jSeparator13, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Patient, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator14, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(Drug, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jSeparator9, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(9, 9, 9)
+                                .addComponent(Cash, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSeparator13, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Patient, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        TransactionID.setEditable(false);
+        TransactionID.setBackground(new java.awt.Color(51, 51, 0));
+        TransactionID.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        TransactionID.setForeground(new java.awt.Color(255, 0, 0));
+        TransactionID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TransactionIDActionPerformed(evt);
+            }
+        });
+
+        Transaction.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        Transaction.setForeground(new java.awt.Color(255, 0, 0));
+        Transaction.setText("Transaction No");
+
+        jSeparator7.setForeground(new java.awt.Color(0, 153, 255));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 153, 255));
+        jLabel5.setText("Transaction ");
+
+        jSeparator8.setForeground(new java.awt.Color(0, 153, 255));
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel7.setText("Logged In As");
+
+        transacted_by.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        transacted_by.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                transacted_byActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setText("GG&JJ ,Inc    Copyright 2015");
+
+        jMenu1.setText("File");
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/components/logout.png"))); // NOI18N
+        jMenuItem2.setText("Log out");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/components/Exit.png"))); // NOI18N
+        jMenuItem1.setText("Exit");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(datevar);
+        jMenuBar1.add(timevar);
+
+        setJMenuBar(jMenuBar1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSeparator6))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Transaction)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TransactionID, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(transacted_by, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(11, 11, 11))
+            .addComponent(jSeparator7)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, 1607, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(transacted_by, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Transaction, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TransactionID, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(5, 5, 5)
+                .addComponent(jSeparator8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        setSize(new java.awt.Dimension(1662, 1019));
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    public void PrintBill() {
+
+        MessageFormat header = new MessageFormat("Bill");
+        MessageFormat footer = new MessageFormat("page{0,number,integer}");
+        try {
+
+            Trasaction_Table.print(JTable.PrintMode.NORMAL, header, null);
+
+        } catch (java.awt.print.PrinterException e) {
+            System.err.format("cannot print %s%n", e.getMessage());
+        }
+
+    }
+    private void Execute_PrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Execute_PrintActionPerformed
+
+        try {
+            String sql1 = "insert into transaction values (?,?,?,?,?,?,?) ";
+            pst = connection.prepareStatement(sql1);
+            pst.setString(1, TransactionID.getText());
+            pst.setString(2, GrandTotalFetch.getText());
+            pst.setString(3, TenderFetch.getText());
+            pst.setString(4, ChangeFetch.getText());
+            pst.setString(5, quantity_enter.getText());
+            pst.setString(7, search_drug.getText());
+            pst.setString(6, transacted_by.getText());
+
+            pst.execute();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+
+        purchased_item_pay();
+        PrintBill();
+        emptysold();
+        inittransaction_id();
+        update_table();
+        clearfiled();
+        check_available();
+
+
+    }//GEN-LAST:event_Execute_PrintActionPerformed
+
+    private void purchased_item_pay() {
+        try {
+            String sql1 = "insert into purchased_item(customer_name,price,tender,changecash,type) values (?,?,?,?,?) ";
+            pst = connection.prepareStatement(sql1);
+
+            pst.setString(1, "N/A");
+            pst.setString(2, GrandTotalFetch.getText());
+            pst.setString(3, TenderFetch.getText());
+            pst.setString(4, ChangeFetch.getText());
+            pst.setString(5, "Paid");
+            pst.execute();
+
+        } catch (SQLException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+    }
+
+    private void purchased_item_loan() {
+
+        try {
+            String sql1 = "insert into purchased_item(customer_name,price,tender,changecash,type) values (?,?,?,?,?) ";
+            pst = connection.prepareStatement(sql1);
+            pst.setString(1, P_Name.getText());
+            pst.setString(2, GrandTotalFetch.getText());
+            pst.setString(3, "0");
+            pst.setString(4, "0");
+            pst.setString(5, "Loan");
+            pst.execute();
+
+        } catch (SQLException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+
+    }
+
+    private void ChangeFetchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangeFetchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChangeFetchActionPerformed
+
+    private void GrandTotalFetchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GrandTotalFetchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_GrandTotalFetchActionPerformed
+
+    private void TenderFetchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TenderFetchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TenderFetchActionPerformed
+
+    private void Eecute_PatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Eecute_PatientActionPerformed
+        String sql = "delete from sold";
+        try {
+            pst = connection.prepareStatement(sql);
+            pst.execute();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        try {
+            String sql1 = "insert into transaction values (?,?,?,?,?,?,?) ";
+            pst = connection.prepareStatement(sql1);
+            pst.setString(1, TransactionID.getText());
+            pst.setString(2, GrandTotalFetch.getText());
+            pst.setString(3, GrandTotalFetch.getText());
+            pst.setString(4, "0");
+            pst.setString(5, quantity_enter.getText());
+            pst.setString(7, search_drug.getText());
+            pst.setString(6, transacted_by.getText());
+            pst.execute();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+
+        try {
+            String loan_tk = "select loan from customer_patient where c_p_name = ?";
+
+            pst = connection.prepareStatement(loan_tk);
+            pst.setString(1, P_Name.getText());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+
+                double ad0, ad1, add;
+                String add0 = rs.getString("loan");
+                ad0 = Double.parseDouble(add0);
+                String add1 = GrandTotalFetch.getText();
+                ad1 = Double.parseDouble(add1);
+                add = ad1 + ad0;//double
+                String Final = Double.toString(add);//StringLoan
+                String patient = "update customer_patient set loan = ? where c_p_name=?";
+                pst = connection.prepareStatement(patient);
+                pst.setString(1, Final);
+                pst.setString(2, P_Name.getText());
+                pst.execute();
+                diplayupdatedloan();
+                JOptionPane.showMessageDialog(null, "Loan has been provided which will be added to the record");
+            }
+
+        } catch (SQLException | NumberFormatException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        purchased_item_loan();
+
+        update_table();
+        sntxt.setText("0");
+        GrandTotalFetch.setText(" ");
+        inittransaction_id();
+        diplayupdatedloan();
+
+
+    }//GEN-LAST:event_Eecute_PatientActionPerformed
+
+    private void CreditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreditActionPerformed
+
+    }//GEN-LAST:event_CreditActionPerformed
+
+    private void Execute_DrugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Execute_DrugActionPerformed
+        try {
+            String sql1 = "insert into sold(s_no,name,quantity,price_item,price_sum) values (?,?,?,?,?) ";
+            pst = connection.prepareStatement(sql1);
+            int sum = 0;
+            sum = sum + Integer.parseInt(sntxt.getText());
+            pst.setString(1, Integer.toString(sum));
+            pst.setString(2, Drug_Name.getText());
+            pst.setString(3, quantity_enter.getText());
+            pst.setString(4, price.getText());
+            pst.setString(5, Sum.getText());
+            pst.execute();
+            sntxt.setText(Integer.toString(++sum));
+
+        } catch (SQLException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+        update_table();
+        total();
+        UpdateInventory();
+
+
+    }//GEN-LAST:event_Execute_DrugActionPerformed
+
+    private void priceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_priceActionPerformed
+
+    private void Drug_NameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Drug_NameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Drug_NameActionPerformed
+
+    private void GoToPatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GoToPatientActionPerformed
+
+        new Patient().setVisible(true);    // TODO add your handling code here:
+    }//GEN-LAST:event_GoToPatientActionPerformed
+
+    private void P_NameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_NameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_P_NameActionPerformed
+
+    private void quantity_enterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quantity_enterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_quantity_enterActionPerformed
+
+    private void GoToPatientKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_GoToPatientKeyPressed
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            new Patient().setVisible(true);
+        }
+    }//GEN-LAST:event_GoToPatientKeyPressed
+
+    private void Drug_ID_BoxPopupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent evt) {//GEN-FIRST:event_Drug_ID_BoxPopupMenuWillBecomeInvisible
+        String fetch = (String) Drug_ID_Box.getSelectedItem();
+        String SQL = "select * from inventory  where drug_batch= ?";
+        try {
+            pst = connection.prepareStatement(SQL);
+            pst.setString(1, fetch);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String add1 = rs.getString("drug_name");
+                Drug_Name.setText(add1);
+                String add3 = rs.getString("drug_exp");
+                Edate.setText(add3);
+                String add = rs.getString("drug_price");
+                price.setText(add);
+                String add0 = rs.getString("drug_batch");
+                search_drug.setText(add0);
+
+            }
+        } catch (Exception e) {
+
+    }//GEN-LAST:event_Drug_ID_BoxPopupMenuWillBecomeInvisible
+
+    }
+    private void Phone_No_PatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Phone_No_PatientActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Phone_No_PatientActionPerformed
+
+    private void Search_PatientKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Search_PatientKeyReleased
+        try {
+            String SQL = "select * from customer_patient where c_p_name = ? ";
+            pst = connection.prepareStatement(SQL);
+            pst.setString(1, Search_Patient.getText());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String add1 = rs.getString("c_p_phone_number");
+                Phone_No_Patient.setText(add1);
+                String add2 = rs.getString("c_p_name");
+                P_Name.setText(add2);
+                String add3 = rs.getString("loan");
+                Credit.setText(add3);
+                String add4 = rs.getString("c_p_id");
+                Search_Patient1.setText(add4);
+            } else {
+                P_Name.setText("n/a");
+                Phone_No_Patient.setText("n/a");
+                Credit.setText("n/a");
+                Search_Patient1.setText("n/a");
+
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+    }//GEN-LAST:event_Search_PatientKeyReleased
+
+    private void search_drugKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_search_drugKeyReleased
+
+        try {
+            String SQL = "select * from inventory where drug_batch = ? ";
+            pst = connection.prepareStatement(SQL);
+            pst.setString(1, search_drug.getText());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String add1 = rs.getString("drug_name");
+                Drug_Name.setText(add1);
+                String add2 = rs.getString("drug_exp");
+                Edate.setText(add2);
+                String add3 = rs.getString("drug_price");
+                price.setText(add3);
+            } else {
+                Drug_Name.setText("n/a");
+                Edate.setText("n/a");
+                price.setText("n/a");
+
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, e);
+
+        }
+    }//GEN-LAST:event_search_drugKeyReleased
+
+    private void Drug_ID_BoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Drug_ID_BoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Drug_ID_BoxActionPerformed
+
+    private void Search_PatientKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Search_PatientKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Search_PatientKeyTyped
+
+    private void quantity_enterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantity_enterKeyReleased
+
+
+    }//GEN-LAST:event_quantity_enterKeyReleased
+
+    private void update_table() {
+        String sql = "select s_no as SNo ,name as DrugName,quantity as Quantity,price_item as Price, price_sum as Total  from sold";
+        try {
+            pst = connection.prepareStatement(sql);
+            rs = pst.executeQuery();
+            Trasaction_Table.setModel(DbUtils.resultSetToTableModel(rs));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void search_drugActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_drugActionPerformed
+
+    }//GEN-LAST:event_search_drugActionPerformed
+
+    private void total() {
+        String sql = "select sum(price_sum) from sold";
+        try {
+            pst = connection.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String sum = rs.getString("sum(price_sum)");
+                totalte = sum;
+                GrandTotalFetch.setText(sum);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+    private void Execute_DrugKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Execute_DrugKeyPressed
+
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            try {
+                String sql1 = "insert into sold(s_no,name,quantity,price_item,price_sum) values (?,?,?,?,?) ";
+                pst = connection.prepareStatement(sql1);
+                int sum = 0;
+                sum = sum + Integer.parseInt(sntxt.getText());
+                pst.setString(1, Integer.toString(sum));
+                pst.setString(2, Drug_Name.getText());
+                pst.setString(3, quantity_enter.getText());
+                pst.setString(4, price.getText());
+                pst.setString(5, Sum.getText());
+                pst.execute();
+                sntxt.setText(Integer.toString(++sum));
+
+            } catch (SQLException | NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, e);
+
+            }
+            update_table();
+            total();
+            UpdateInventory();
+
+        }
+    }//GEN-LAST:event_Execute_DrugKeyPressed
+
+    private void Execute_DrugAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_Execute_DrugAncestorAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Execute_DrugAncestorAdded
+
+    private void Execute_PrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Execute_PrintKeyPressed
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            try {
+                String sql1 = "insert into transaction values (?,?,?,?,?,?,?) ";
+                pst = connection.prepareStatement(sql1);
+                pst.setString(1, TransactionID.getText());
+                pst.setString(2, GrandTotalFetch.getText());
+                pst.setString(3, TenderFetch.getText());
+                pst.setString(4, ChangeFetch.getText());
+                pst.setString(5, quantity_enter.getText());
+                pst.setString(7, search_drug.getText());
+                pst.setString(6, transacted_by.getText());
+
+                pst.execute();
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+
+            }
+
+            purchased_item_pay();
+            PrintBill();
+            emptysold();
+            inittransaction_id();
+            update_table();
+            clearfiled();
+            check_available();
+        }
+    }//GEN-LAST:event_Execute_PrintKeyPressed
+
+    private void Execute_PrintKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Execute_PrintKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Execute_PrintKeyReleased
+
+    private void ChangeFetchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ChangeFetchKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChangeFetchKeyReleased
+
+    private void TransactionIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TransactionIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TransactionIDActionPerformed
+
+    public void CalcChange() {
+
+        Double intTender = Double.parseDouble(TenderFetch.getText());
+        Double intGrand = Double.parseDouble(GrandTotalFetch.getText());
+
+        if ((intTender > intGrand)) {
+
+            Double intChange = intTender - intGrand;
+            String stringChange = Double.toString(intChange);
+            ChangeFetch.setText(stringChange);
+        } else if ((intTender < intGrand)) {
+            ChangeFetch.setText("Need more");
+        } else {
+            ChangeFetch.setText("0");
+        }
+
+    }
+
+    private void calcloan() {
+        String clr = "select * from customer_patient where c_p_name = ?";
+        String stringChange;
+
+        double intChange = 0;
+        double intloan;
+
+        try {
+            pst = connection.prepareStatement(clr);
+            pst.setString(1, P_Name.getText());
+
+            rs = pst.executeQuery();
+            if (rs.next()) {
+
+                intloan = Double.parseDouble(rs.getString("loan"));//Convert to double    
+
+                Double intTender = Double.parseDouble(TenderFetch.getText());
+
+                if ((intTender > intloan) || (intloan == intTender)) {
+
+                    intChange = intTender - intloan;
+                    stringChange = Double.toString(intChange);
+                    ChangeFetch.setText(stringChange);
+                    diplayupdatedloan();
+                    JOptionPane.showMessageDialog(null, "Your loan has been cleared!!!");
+                    String patient = "update customer_patient set loan = ? where c_p_name=?";
+                    pst = connection.prepareStatement(patient);
+                    pst.setString(1, "0");
+                    pst.setString(2, P_Name.getText());
+                    pst.execute();
+
+                } else {
+                    intloan = intloan - intTender;
+                    ChangeFetch.setText("0");
+                    String Final = Double.toString(intloan);//StringLoan
+                    String patient = "update customer_patient set loan = ? where c_p_name=?";
+                    pst = connection.prepareStatement(patient);
+                    pst.setString(1, Final);
+                    pst.setString(2, P_Name.getText());
+                    pst.execute();
+
+                    JOptionPane.showMessageDialog(null, intTender + " has been deduced from your loan !!!");
+                }
+
+            }
+        } catch (SQLException | NumberFormatException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+
+    private void Execute_Print1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Execute_Print1ActionPerformed
+
+        calcloan();
+        diplayupdatedloan();
+        emptysold();
+
+
+    }//GEN-LAST:event_Execute_Print1ActionPerformed
+
+    private void Execute_Print1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Execute_Print1KeyPressed
+
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            calcloan();
+            diplayupdatedloan();
+            emptysold();
+
+        }
+    }//GEN-LAST:event_Execute_Print1KeyPressed
+
+    private void Execute_Print1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Execute_Print1KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Execute_Print1KeyReleased
+
+    private void TenderFetchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TenderFetchKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TenderFetchKeyReleased
+
+    private void TenderFetchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TenderFetchKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            CalcChange();     // TODO add your handling code here:
+    }//GEN-LAST:event_TenderFetchKeyPressed
+    
+    }
+    private void sntxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sntxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sntxtActionPerformed
+
+    private void quantity_enterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantity_enterKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String check = "select stock from inventory";
+            try {
+                pst = connection.prepareStatement(check);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    int value = Integer.parseInt(rs.getString("stock"));
+                    if (value >= (Integer.parseInt(quantity_enter.getText()))) {
+                        double num1, num2, mul;
+                        num1 = Double.parseDouble(quantity_enter.getText());
+                        num2 = Double.parseDouble(price.getText());
+                        mul = num1 * num2;
+                        Sum.setText(Double.toString(mul));
+                    } else {
+
+                        JOptionPane.showMessageDialog(null, "Only " + value + " available !!!" + "\n" + "Input has to less than or equals to " + value);
+
+                    }
+                }
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+
+            }
+        }   // TODO add your handling code here:
+    }//GEN-LAST:event_quantity_enterKeyPressed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        System.exit(0);  // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        dispose();
+        new Login().setVisible(true);    // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void transacted_byActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transacted_byActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_transacted_byActionPerformed
+
+    private void Search_Patient1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Search_Patient1KeyReleased
+        try {
+            String SQL = "select * from customer_patient where c_p_id = ? ";
+            pst = connection.prepareStatement(SQL);
+            pst.setString(1, Search_Patient1.getText());
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String add1 = rs.getString("c_p_phone_number");
+                Phone_No_Patient.setText(add1);
+                String add2 = rs.getString("c_p_name");
+                P_Name.setText(add2);
+                String add3 = rs.getString("loan");
+                Credit.setText(add3);
+                String add4 = rs.getString("c_p_name");
+                Search_Patient.setText(add4);
+            } else {
+                P_Name.setText("n/a");
+                Phone_No_Patient.setText("n/a");
+                Credit.setText("n/a");
+                Search_Patient.setText("n/a");
+
+            }
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, e);
+
+        }    // TODO add your handling code here:
+    }//GEN-LAST:event_Search_Patient1KeyReleased
+
+    private void Search_Patient1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Search_Patient1KeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Search_Patient1KeyTyped
+
+    private void Search_PatientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Search_PatientActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Search_PatientActionPerformed
+
+    private void Eecute_PatientKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Eecute_PatientKeyPressed
+
+        if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+
+            String sql = "delete from sold";
+            try {
+                pst = connection.prepareStatement(sql);
+                pst.execute();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+            try {
+                String sql1 = "insert into transaction values (?,?,?,?,?,?,?) ";
+                pst = connection.prepareStatement(sql1);
+                pst.setString(1, TransactionID.getText());
+                pst.setString(2, GrandTotalFetch.getText());
+                pst.setString(3, GrandTotalFetch.getText());
+                pst.setString(4, "0");
+                pst.setString(5, quantity_enter.getText());
+                pst.setString(7, search_drug.getText());
+                pst.setString(6, transacted_by.getText());
+                pst.execute();
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+
+            }
+
+            try {
+                String loan_tk = "select loan from customer_patient where c_p_name = ?";
+
+                pst = connection.prepareStatement(loan_tk);
+                pst.setString(1, P_Name.getText());
+                rs = pst.executeQuery();
+                if (rs.next()) {
+
+                    double ad0, ad1, add;
+                    String add0 = rs.getString("loan");
+                    ad0 = Double.parseDouble(add0);
+                    String add1 = GrandTotalFetch.getText();
+                    ad1 = Double.parseDouble(add1);
+                    add = ad1 + ad0;//double
+                    String Final = Double.toString(add);//StringLoan
+                    String patient = "update customer_patient set loan = ? where c_p_name=?";
+                    pst = connection.prepareStatement(patient);
+                    pst.setString(1, Final);
+                    pst.setString(2, P_Name.getText());
+                    pst.execute();
+                    diplayupdatedloan();
+                    JOptionPane.showMessageDialog(null, "Loan has been provided which will be added to the record");
+                }
+
+            } catch (SQLException | NumberFormatException | HeadlessException e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+
+            purchased_item_loan();
+
+            update_table();
+            sntxt.setText("0");
+            GrandTotalFetch.setText(" ");
+            inittransaction_id();
+            diplayupdatedloan();
+
+        }
+
+    }//GEN-LAST:event_Eecute_PatientKeyPressed
+
+    private void quantity_enterKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_quantity_enterKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_quantity_enterKeyTyped
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Transaction.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Transaction.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Transaction.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Transaction.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(() -> {
+            new Transaction().setVisible(true);
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel Cash;
+    private javax.swing.JLabel Change;
+    private javax.swing.JTextField ChangeFetch;
+    private javax.swing.JTextField Credit;
+    private javax.swing.JPanel Drug;
+    private javax.swing.JLabel DrugId;
+    private javax.swing.JLabel DrugName;
+    private javax.swing.JComboBox Drug_ID_Box;
+    private javax.swing.JTextField Drug_Name;
+    private javax.swing.JTextField Edate;
+    private javax.swing.JButton Eecute_Patient;
+    private javax.swing.JButton Execute_Drug;
+    private javax.swing.JButton Execute_Print;
+    private javax.swing.JButton Execute_Print1;
+    private javax.swing.JLabel ExpirationDate;
+    private javax.swing.JButton GoToPatient;
+    private javax.swing.JTextField GrandTotalFetch;
+    private javax.swing.JLabel MFG1;
+    private javax.swing.JTextField P_Name;
+    private javax.swing.JPanel Patient;
+    private javax.swing.JLabel Phone;
+    private javax.swing.JTextField Phone_No_Patient;
+    private javax.swing.JLabel QNTY_LABEL;
+    private javax.swing.JLabel QNTY_LABEL1;
+    private javax.swing.JLabel QNTY_LABEL2;
+    private javax.swing.JTextField Search_Patient;
+    private javax.swing.JTextField Search_Patient1;
+    private javax.swing.JTextField Sum;
+    private javax.swing.JLabel Tender;
+    private javax.swing.JTextField TenderFetch;
+    private javax.swing.JLabel Transaction;
+    private javax.swing.JTextField TransactionID;
+    private javax.swing.JTable Trasaction_Table;
+    private javax.swing.JMenu datevar;
+    private javax.swing.JFrame jFrame1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator10;
+    private javax.swing.JSeparator jSeparator11;
+    private javax.swing.JSeparator jSeparator12;
+    private javax.swing.JSeparator jSeparator13;
+    private javax.swing.JSeparator jSeparator14;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JSeparator jSeparator8;
+    private javax.swing.JSeparator jSeparator9;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField price;
+    private javax.swing.JTextField quantity_enter;
+    private javax.swing.JTextField search_drug;
+    private javax.swing.JTextField sntxt;
+    private javax.swing.JMenu timevar;
+    private javax.swing.JTextField transacted_by;
+    // End of variables declaration//GEN-END:variables
+
+    private void check_available() {
+        String sql = "select stock from inventory";
+        try {
+            pst = connection.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String add = rs.getString("stock");
+                int num1 = Integer.parseInt(add);
+                System.out.print(num1);
+
+                if (num1 == 0) {
+                    String num2 = Double.toString(num1);
+                    String query = "delete from inventory where stock=?";
+                    try {
+
+                        pst = connection.prepareStatement(query);
+                        pst.setString(1, num2);
+                        pst.execute();
+                    } catch (SQLException | HeadlessException e) {
+                        JOptionPane.showMessageDialog(null, e);
+                    }
+
+                }
+
+            }
+        } catch (SQLException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
+
+    private void UpdateInventory() {
+        String sql = "select stock from inventory";
+        String add;
+        int num1 = 0;
+        String value1;
+        int ofval1;
+        try {
+
+            pst = connection.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                add = rs.getString("stock");
+                num1 = Integer.parseInt(add);
+
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+        try {
+            value1 = quantity_enter.getText();
+            ofval1 = Integer.parseInt(value1);
+
+            num1 = num1 - ofval1;
+
+            String Final = Integer.toString(num1);
+
+            String query = "update inventory set stock = ? where drug_batch=?";
+            pst = connection.prepareStatement(query);
+            pst.setString(1, Final);
+            pst.setString(2, search_drug.getText());
+            pst.execute();
+
+        } catch (SQLException | HeadlessException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+}
